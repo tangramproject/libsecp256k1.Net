@@ -1,33 +1,55 @@
 ﻿using System;
-using Libsecp256k1Zkp.Net.Linking;
+
+using static Libsecp256k1Zkp.Net.Secp256k1Native;
 using static Libsecp256k1Zkp.Net.RangeProofNative;
 
 namespace Libsecp256k1Zkp.Net
 {
+    public struct ProofInfoStruct
+    {
+        public bool success;
+        public ulong value;
+        public byte[] message;
+        public byte[] blindin;
+        public uint mlen;
+        public ulong min;
+        public ulong max;
+        public int exp;
+        public int mantissa;
+
+        public ProofInfoStruct(bool success, ulong value, byte[] message, byte[] blindin, uint mlen, ulong min, ulong max, int exp, int mantissa)
+        {
+            this.success = success;
+            this.value = value;
+            this.message = message;
+            this.blindin = blindin;
+            this.mlen = mlen;
+            this.min = min;
+            this.max = max;
+            this.exp = exp;
+            this.mantissa = mantissa;
+        }
+    }
+
+    public struct ProofStruct
+    {
+        public byte[] proof;
+        public uint plen;
+
+        public ProofStruct(byte[] proof, uint plen)
+        {
+            this.proof = proof;
+            this.plen = plen;
+        }
+    }
+
     public class RangeProof : IDisposable
     {
-        private readonly Lazy<secp256k1_context_create> secp256k1_context_create;
-        private readonly Lazy<secp256k1_rangeproof_sign> secp256k1_rangeproof_sign;
-        private readonly Lazy<secp256k1_rangeproof_info> secp256k1_rangeproof_info;
-        private readonly Lazy<secp256k1_rangeproof_rewind> secp256k1_rangeproof_rewind;
-        private readonly Lazy<secp256k1_rangeproof_verify> secp256k1_rangeproof_verify;
-        private readonly Lazy<secp256k1_context_destroy> secp256k1_context_destroy;
-        
-        private static readonly Lazy<string> _libPath = new(() => Resolver.Resolve(Constant.LIB));
-        private static readonly Lazy<IntPtr> _libPtr = new(() => LoadNative.LoadLib(_libPath.Value));
-        
         public IntPtr Context { get; private set; }
 
         public RangeProof()
         {
-            secp256k1_context_create = Util.LazyDelegate<secp256k1_context_create>(_libPtr);
-            secp256k1_rangeproof_sign = Util.LazyDelegate<secp256k1_rangeproof_sign>(_libPtr);
-            secp256k1_rangeproof_info = Util.LazyDelegate<secp256k1_rangeproof_info>(_libPtr);
-            secp256k1_rangeproof_rewind = Util.LazyDelegate<secp256k1_rangeproof_rewind>(_libPtr);
-            secp256k1_rangeproof_verify = Util.LazyDelegate<secp256k1_rangeproof_verify>(_libPtr);
-            secp256k1_context_destroy = Util.LazyDelegate<secp256k1_context_destroy>(_libPtr);
-
-            Context = secp256k1_context_create.Value((uint)(Flags.SECP256K1_CONTEXT_SIGN | Flags.SECP256K1_CONTEXT_VERIFY));
+            Context = secp256k1_context_create((uint)(Flags.SECP256K1_CONTEXT_SIGN | Flags.SECP256K1_CONTEXT_VERIFY));
         }
 
         /// <summary>
@@ -59,7 +81,7 @@ namespace Libsecp256k1Zkp.Net
 
             while (success == false)
             {
-                success = secp256k1_rangeproof_sign.Value(
+                success = secp256k1_rangeproof_sign(
                             Context,
                             proof,
                             ref plen,
@@ -94,7 +116,7 @@ namespace Libsecp256k1Zkp.Net
 
             var secretKey = secp256k1.CreatePrivateKey();
 
-            var success = secp256k1_rangeproof_info.Value(
+            var success = secp256k1_rangeproof_info(
                             Context,
                             ref exp,
                             ref mantissa,
@@ -141,7 +163,7 @@ namespace Libsecp256k1Zkp.Net
 
             commit = pedersen.CommitParse(commit);
 
-            var success = secp256k1_rangeproof_rewind.Value(
+            var success = secp256k1_rangeproof_rewind(
                             Context,
                             blindOut,
                             ref value,
@@ -189,7 +211,7 @@ namespace Libsecp256k1Zkp.Net
             {
                 commit = pedersen.CommitParse(commit);
 
-                success = secp256k1_rangeproof_verify.Value(
+                success = secp256k1_rangeproof_verify(
                     Context,
                     ref min,
                     ref max,
@@ -204,14 +226,13 @@ namespace Libsecp256k1Zkp.Net
             return success;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public void Dispose()
         {
-            if (Context == IntPtr.Zero) return;
-            secp256k1_context_destroy.Value(Context);
-            Context = IntPtr.Zero;
+            if (Context != IntPtr.Zero)
+            {
+                secp256k1_context_destroy(Context);
+                Context = IntPtr.Zero;
+            }
         }
     }
 }

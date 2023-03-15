@@ -3,15 +3,14 @@
   <PropertyGroup>
     <RootNamespace>libsecp256k1Zkp.Net</RootNamespace>
     <PackageId>libsecp256k1Zkp.Net</PackageId>
-    <PackageVersion>1.1.11</PackageVersion>
+    <PackageVersion>1.1.13</PackageVersion>
     <Authors>pingpongsneak</Authors>
-    <PackageIconUrl>https://github.com/cypher-network.png</PackageIconUrl>
-    <NeutralLanguage></NeutralLanguage>
+    <NeutralLanguage>en-ZA</NeutralLanguage>
     <PackageLicenseUrl>https://raw.githubusercontent.com/cypher-network/libsecp256k1.Net/main/LICENSE</PackageLicenseUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Owners>Tangram Inc</Owners>
     <PackageProjectUrl>https://github.com/cypher-network/libsecp256k1.Net.git</PackageProjectUrl>
-    <PackageTags>Secp256k1 libsecp256k1 Tangram ECDSA bitcoin Grin MimbleWimble</PackageTags>
+    <PackageTags>Secp256k1 libsecp256k1 Tangram Cypher Bitcoin</PackageTags>
     <Title>Secp256k1.ZKP.Net</Title>
     <Description>This package contains platform-specific native code builds of secp256k1. Included:win-x86/libsecp256k1.dll, win-x64/libsecp256k1.dll, osx-x64/libsecp256k1.dylib and linux-x64/libsecp256k1.so</Description>
     <PackOnBuild>true</PackOnBuild>
@@ -19,8 +18,7 @@
     <LangVersion>9</LangVersion>
     <Nullable>enable</Nullable>
     <TargetFramework>net6.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>1.1.11</AssemblyVersion>
+    <PackageIcon>favicon.ico</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -34,11 +32,15 @@
     <None Remove="Examples\bin\.DS_Store" />
     <None Remove="Examples\obj\Debug\netcoreapp2.2\Examples.assets.cache" />
     <None Remove="Examples\bin\Debug\netcoreapp2.2\Examples.deps.json" />
+    <None Update="favicon.ico">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NuGet.Build.Packaging" Version="0.2.2"><PrivateAssets>all</PrivateAssets>
 <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 </PackageReference>
-    <PackageReference Include="Secp256k1.ZKP" Version="1.0.17" />
+    <PackageReference Include="Secp256k1.ZKP" Version="1.0.19" />
   </ItemGroup>
 </Project>

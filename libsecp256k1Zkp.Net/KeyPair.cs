@@ -14,8 +14,6 @@ namespace Libsecp256k1Zkp.Net
 
             PublicKey = publicKey;
             PrivateKey = privateKey;
-
-            Array.Clear(privateKey, 0, 32);
         }
     }
 }
