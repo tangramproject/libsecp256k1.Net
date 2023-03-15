@@ -1,4 +1,4 @@
-
+﻿
 namespace Libsecp256k1Zkp.Net
 {
     public static class Constant
@@ -22,6 +22,7 @@ namespace Libsecp256k1Zkp.Net
         public const int PUBLIC_KEY_SIZE = 64;
         public const int PUBLIC_KEY_COMPRESSED_SIZE = 33;
         public const int MESSAGE_SIZE = 32;
+        public const int ADAPTOR_SIG_SIZE = 162;
         public const int SIGNATURE_SIZE = 64;
         public const int MAX_SIGNATURE_SIZE = 72;
         public const int COMPACT_SIGNATURE_SIZE = 64;
